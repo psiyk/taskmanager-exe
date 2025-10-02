@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>taskmgr.exe</title>
+    <link rel="stylesheet" href="style.css" defer>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="scripts/tasksHandler.js" defer></script>
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header>
+            <div class="header-wrapper p-div">
+                <div class="logo">
+                    <!-- <img src="" alt="taskmgr"> -->
+                    <p class="title">taskmgr</p>
+                </div>
+                <button id="addTask" onclick="createTask()">Add Task</button>
+            </div>
+        </header>
+        <main>
+            <div class="main-wrapper p-div parent">
+                <h2>Tasks Manager <button id="styleArray">List</button></h2>
+                <div class="tasks-section">
+                    <p class="filler">No tasks yet...</p>
+                    <div class="tasks-wrapper">
+
+
+                    </div>
+                </div>
+
+                <div class="add-tasks-section askCont">
+                    <h3>Add your Task</h3>
+                    <form action="" id="recieveTask" class="addForm">
+                        <fieldset>
+                            <label for="task">Task:</label>
+                            <input type="text" name="Task" id="task" placeholder="Your Task - required" required>
+                        </fieldset>
+                        <fieldset>
+                            <label for="details">Details:</label>
+                            <textarea type="text" name="details" id="details" placeholder="Your tasks"
+                                height="400"></textarea>
+                        </fieldset>
+                        <fieldset>
+                            <label for="datetime">Due Time:</label>
+                            <input type="datetime-local" name="datetime" id="datetime" required>
+                        </fieldset>
+
+                        <button onclick="" type="submit" id="submit">Add task</button>
+                        <button onclick="" type="reset" class="btnCancel">Cancel</button>
+
+                    </form>
+                </div>
+            </div>
+            <div class="task-overview p-div parent">
+                <h3>Tasks Overview</h3>
+                <div class="overview-wrapper">
+
+                </div>
+            </div>
+        </main>
+        <footer></footer>
+    </div>
+</body>
+
+</html>
