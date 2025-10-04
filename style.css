@@ -177,6 +177,7 @@ button {
 .add-tasks-section {
   text-wrap: pretty;
   position: fixed;
+  z-index: 100;
   /* inset: 50% 50% unset unset; */
   bottom: 50%;
   right: 50%;
@@ -280,7 +281,7 @@ p.filler.show {
     span {
       font-family: var(--font-sans);
       font-size: var(--p-unit);
-      mix-blend-mode: exclusion;
+      /* mix-blend-mode: exclusion; */
     }
   }
   p.tot {
@@ -317,5 +318,16 @@ p.filler.show {
     span {
       mix-blend-mode: normal;
     }
+  }
+}
+
+.portfoilio {
+  color: var(--t-tsk-p-color);
+  text-decoration: underline var(--btn-color);
+
+  &:hover,
+  &:focus {
+    color: var(--t-tsk-color);
+    text-decoration-color: var(--btn-color-h);
   }
 }

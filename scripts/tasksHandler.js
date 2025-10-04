@@ -149,6 +149,8 @@ function loadTasks() {
         localStorage.setItem("canceled-tasks", JSON.stringify(canceledTasks));
         loadedTasks = loadedTasks.filter((t) => t.id !== task.id);
         localStorage.setItem("tasks", JSON.stringify(loadedTasks));
+        tDiv.remove();
+
         showOverview();
         loadTasks(); // Only this, no tDiv.remove()
       });
@@ -159,7 +161,7 @@ function loadTasks() {
         localStorage.setItem("doneed-tasks", JSON.stringify(doneTasks));
         loadedTasks = loadedTasks.filter((t) => t.id !== task.id);
         localStorage.setItem("tasks", JSON.stringify(loadedTasks));
-        // tDiv.remove();
+        tDiv.remove();
         showOverview();
         loadTasks();
       });
