@@ -111,15 +111,14 @@ function loadTasks() {
   let loadedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   getSmth(".tasks-wrapper");
+
   if (loadedTasks.length !== 0) {
     const taskWrapper = getSmth(".tasks-wrapper");
     taskWrapper.innerHTML = "";
 
     loadedTasks.forEach((task, index) => {
-      const id = task.id;
-      const name = task.name;
-      const status = task.status;
-      const details = task.details;
+
+      const { id, name, status, details } = task
       const time = task["due-time"].split("T").join(" ");
 
       const tDiv = document.createElement("div");
@@ -129,32 +128,56 @@ function loadTasks() {
       tDiv.innerHTML = `<div id="task-detail">
                                 <p data-date="${time}" class="date">Due Date: ${time} </p>
                                 <h3 class="taskTitle" data-title="${name}">${name}</h3>
-                                <p class="Task Details" data-detials="${details}"> ${details}                               </p>
+                                <p class="Task Details" data-detials="${details}"> ${details}</p>
                             </div>
-                            <div class="opt-btns" id="optBtns">
-                                <button id="removeTaskBtn" class="remove-btn">Remove Task</button>
-                                <button id="clearTaskBtn" class="clear-btn">Done Task</button>
+                            <div class="opt-btns" >
+                                <button  class="remove-btn">Remove Task</button>
+                                <button  class="clear-btn">Done Task</button>
                             </div>`;
-
       taskWrapper.appendChild(tDiv);
 
-      const removeBtn = tDiv.querySelector(`.remove-btn`);
-      const clearBtn = tDiv.querySelector(`#clearTaskBtn`);
 
-      // taskWrapper.innerHTML += taskDiv;
+      const td = tDiv.querySelector('#task-detail');
+      td.addEventListener('click', () => {
+        const fullD = document.createElement(`div`);
+        fullD.classList.add('modal');
+        fullD.innerHTML = `
+        <button type="button" class="closeModal exit"><span>✕</span></button>
+          <div class="modal-wrapper">
+            <p class="task-date">Due Date: ${time}</p>
+            <h3 class="task-title" data-title="${name}">${name}</h3>
+            <p class="Task-details" data-detials="${details}"> ${details}</p>
+              <div class="opt-btns" class="optBtns modal-btns">
+                                <button  class="remove-btn">Remove Task</button>
+                                <button  class="clear-btn">Done Task</button>
+                            </div>
+          </div>
+
+          `;
+        td.insertAdjacentElement('afterend', fullD);
+        fullD.querySelector('button.exit').addEventListener('click', () => {
+          fullD.classList.add('hide')
+        })
+
+
+
+        fullD.querySelector('.clear-btn').addEventListener("click", () => {
+          donTasks(task, tDiv);
+          fullD.remove();
+        });
+
+        fullD.querySelector('.remove-btn').addEventListener("click", () => {
+          cancTasks(task, tDiv);
+          fullD.remove();
+        });
+      });
+      const removeBtn = tDiv.querySelector(`.remove-btn`);
+      const clearBtn = tDiv.querySelector(`.clear-btn`);
+
 
       removeBtn.addEventListener("click", () => {
-        canceledTasks = JSON.parse(localStorage.getItem("canceled-tasks")) || [];
-        canceledTasks.push(task);
-        localStorage.setItem("canceled-tasks", JSON.stringify(canceledTasks));
-        loadedTasks = loadedTasks.filter((t) => t.id !== task.id);
-        localStorage.setItem("tasks", JSON.stringify(loadedTasks));
-        tDiv.remove();
-
-        showOverview();
-        loadTasks(); // Only this, no tDiv.remove()
+        cancTasks(task, tDiv);
       });
-
       clearBtn.addEventListener("click", () => {
         doneTasks = JSON.parse(localStorage.getItem("doneed-tasks")) || [];
         doneTasks.push(task);
@@ -166,9 +189,31 @@ function loadTasks() {
         loadTasks();
       });
 
-    });
+      function cancTasks(task, tDiv) {
+        canceledTasks = JSON.parse(localStorage.getItem("canceled-tasks")) || [];
+        canceledTasks.push(task);
+        localStorage.setItem("canceled-tasks", JSON.stringify(canceledTasks));
+        loadedTasks = loadedTasks.filter((t) => t.id !== task.id);
+        localStorage.setItem("tasks", JSON.stringify(loadedTasks));
+        tDiv.remove();
+        showOverview();
+        loadTasks();
+      }
+      function donTasks(task, tDiv) {
+        doneTasks = JSON.parse(localStorage.getItem("doneed-tasks")) || [];
+        doneTasks.push(task);
+        localStorage.setItem("doneed-tasks", JSON.stringify(doneTasks));
+        loadedTasks = loadedTasks.filter((t) => t.id !== task.id);
+        localStorage.setItem("tasks", JSON.stringify(loadedTasks));
+        tDiv.remove();
+        showOverview();
+        loadTasks();
+      }
+
+    })
   }
 }
+
 function showOverview() {
   const tP = document.createElement("p");
   const cP = document.createElement("p");

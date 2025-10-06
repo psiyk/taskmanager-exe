@@ -26,9 +26,11 @@
   --btn-color: #282828;
   --btn-color-h: #3f3f3f;
   --rem-color-h: hsl(0, 73%, 17%);
+  --early-color: hsl(120, 72%, 47%);
+  --late-color: hsl(0, 73%, 47%);
   --rem-color-h: hsl(0, 38%, 6%);
   --rem-color: hsl(0, 38%, 6%, 0.5);
-  --clr-color-h: rgb(12, 75, 12, 0.5);
+  --clr-color-h: hsla(120, 72%, 17%, 0.5);
   --clr-color-h: rgb(9, 21, 9);
   --clr-color: rgb(9, 21, 9, 0.5);
 
@@ -39,6 +41,40 @@
   --p-unit: 0.75rem;
 
   --bd-unit: 1px solid;
+}
+:root {
+  @media (prefers-color-scheme: light) {
+    /* Base & Surfaces */
+    --b-color: #fffbea; /* Soft lemon background */
+    --tsk-color: #f8f5dc; /* Slightly darker task container for contrast */
+    --b-d-color: #f2efc8; /* Divider / section tone */
+    --b-d-2-color: #e9e4b8; /* Subtle section contrast */
+
+    /* Text Colors */
+    --t-a-color: #111111; /* Main text color */
+    --t-btn-color: #1a1a1a; /* Button text */
+    --t-tsk-color: #222222; /* Task title text */
+    --t-tsk-p-color: #444444; /* Paragraph text (medium gray) */
+
+    /* Neutral Buttons */
+    --btn-color: #e8e3b8; /* Neutral button background */
+    --btn-color-h: #dcd7a4; /* Hover state */
+
+    /* Stronger Status Buttons */
+    --rem-color: hsla(0, 70%, 85%, 0.95); /* Noticeable soft red */
+    --rem-color-h: hsl(0, 70%, 78%); /* Deeper red on hover */
+
+    --clr-color: hsla(120, 55%, 85%, 0.95); /* Noticeable green */
+    --clr-color-h: hsl(120, 55%, 75%); /* Stronger green on hover */
+
+    /* Accent Colors */
+    --early-color: hsl(120, 55%, 35%); /* Deep success green text/accent */
+    --late-color: hsl(0, 60%, 40%); /* Deep error red text/accent */
+
+    /* Borders & Shadows */
+    --border-color: #cfcaa0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 * {
@@ -53,6 +89,10 @@
 body {
   background-color: var(--b-color);
   color: var(--t-a-color);
+}
+body:has(.modal:not(.hide)),
+body:has(.askCont.active) {
+  overflow: hidden;
 }
 .p-div {
   width: var(--parent-width);
@@ -108,7 +148,7 @@ button {
     font-family: var(--font-sans);
     color: var(--t-tsk-color);
     padding: var(--unit);
-    display: none;
+    /* display: none; */
   }
   .tasks-wrapper {
     display: grid;
@@ -122,7 +162,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: var(--unit);
-
+    overflow: hidden;
     p.date {
       font-size: var(--p-unit);
       color: var(--t-tsk-p-color);
@@ -144,7 +184,14 @@ button {
       font-family: var(--font-sans);
       font-weight: 300;
       color: var(--t-tsk-p-color);
+      max-height: max-content;
       font-size: calc(1.2 * var(--p-unit));
+      line-break: anywhere;
+      max-height: 4lh;
+      overflow-y: auto;
+      text-overflow: ellipsis;
+      scrollbar-width: thin;
+      scrollbar-color: var(--t-tsk-p-color) transparent;
     }
     #task-detail {
       flex-grow: 1;
@@ -330,4 +377,89 @@ p.filler.show {
     color: var(--t-tsk-color);
     text-decoration-color: var(--btn-color-h);
   }
+}
+.optBtns.modal-btns {
+  width: fit-content;
+  justify-content: center !important;
+}
+.task .modal {
+  /* width: max(100% - var(--unit), var(--parent-width)); */
+
+  width: calc(var(--parent-width) - var(--unit) * 2);
+  max-height: calc(100dvh - var(--unit) * 2);
+  z-index: 100;
+  background-color: var(--b-d-color);
+  padding: calc(var(--unit));
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: grid;
+  gap: var(--p-unit);
+  border: var(--btn-color-h) var(--bd-unit);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--t-tsk-p-color) transparent;
+  * {
+    /* border: 1px solid #fffa; */
+    /* width: 100% !important; */
+  }
+
+  .modal-wrapper {
+    width: var(--parent-width);
+    position: static;
+    height: fit-content;
+  }
+  p.task-date {
+    color: var(--early-color);
+  }
+  h3.task-title {
+    text-transform: capitalize;
+    font-size: calc(var(--unit) * 5) !important;
+    color: var(--t-tsk-p-color);
+    max-width: 40rem;
+    text-align: center;
+    /* border: 1px solid #000; */
+    margin-inline: auto;
+    margin-bottom: calc(var(--unit) * 2);
+    line-height: 0.8;
+  }
+  p.Task-details {
+    color: var(--t-tsk-color);
+    max-height: none;
+    line-height: 1.2lh;
+    max-width: 60ch;
+    word-wrap: normal !important;
+    text-align: left;
+    margin-inline: auto;
+    margin-bottom: calc(var(--unit) * 4);
+    line-break: strict;
+  }
+
+  button.exit {
+    position: fixed;
+    top: var(--unit);
+    right: var(--unit);
+    /* border: 1px solid gray; */
+    color: var(--t-tsk-p-color);
+    background-color: var(--rem-color);
+    opacity: 1;
+    span {
+      /* scale: 2; */
+      font-size: var(--unit);
+    }
+    &:hover,
+    &:focus {
+      color: var(--t-btn-color);
+      background-color: var(--rem-color-h);
+    }
+  }
+}
+.modal.hide {
+  display: none;
+}
+p.cookies {
+  font-size: var(--p-unit);
+  color: var(--btn-color-h);
+  text-align: center;
 }
