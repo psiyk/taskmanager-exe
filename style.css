@@ -14,7 +14,8 @@
 :root {
   --font-serif: "Xahn Mono", serif;
   --font-sans: "Google Sans Code", monospace;
-  --b-color: #080808;
+  /* --b-color: #080808;
+  --b-color-o: #08080888;
   --tsk-color: #0f0f0f;
   --t-a-color: #f8f8f8;
   --t-btn-color: #d8d8d8;
@@ -32,7 +33,37 @@
   --rem-color: hsl(0, 38%, 6%, 0.5);
   --clr-color-h: hsla(120, 72%, 17%, 0.5);
   --clr-color-h: rgb(9, 21, 9);
-  --clr-color: rgb(9, 21, 9, 0.5);
+  --clr-color: rgb(9, 21, 9, 0.5); */
+
+  --b-color: #0c0c0a; /* Deep warm black background */
+  --tsk-color: #1a1a14; /* Slightly lighter, muted olive-dark task container */
+  --b-d-color: #222219; /* Divider / secondary background */
+  --b-d-2-color: #2b2b1f; /* Panels / tertiary background */
+
+  /* Text Colors */
+  --t-a-color: #f9f9e8; /* Soft off-white for readable text */
+  --t-btn-color: #f8f8e0; /* Button text, slight warmth */
+  --t-tsk-color: #eae8c8; /* Task titles with lemon tint */
+  --t-tsk-p-color: #c0bea0; /* Secondary text */
+
+  /* Neutral Buttons */
+  --btn-color: #3a3a2a; /* Neutral button background */
+  --btn-color-h: #4a4a32; /* Hover background */
+
+  /* Stronger Status Buttons */
+  --rem-color: hsla(0, 65%, 35%, 0.9); /* Deep muted red for remove */
+  --rem-color-h: hsl(0, 70%, 42%); /* Brighter red hover */
+
+  --clr-color: hsla(120, 55%, 30%, 0.9); /* Deep green for done */
+  --clr-color-h: hsl(120, 60%, 40%); /* Brighter green hover */
+
+  /* Accent Colors */
+  --early-color: hsl(120, 60%, 55%); /* Success accent */
+  --late-color: hsl(0, 70%, 55%); /* Error accent */
+
+  /* Borders & Shadows */
+  --border-color: #333323;
+  --shadow-color: rgba(255, 255, 255, 0.05);
 
   --parent-width: min(60rem, 100%);
   --form-width: min(30rem, 100% - (2 * var(--unit)));
@@ -46,6 +77,7 @@
   @media (prefers-color-scheme: light) {
     /* Base & Surfaces */
     --b-color: #fffbea; /* Soft lemon background */
+    --b-color-o: #fffbea88; /* Soft lemon background */
     --tsk-color: #f8f5dc; /* Slightly darker task container for contrast */
     --b-d-color: #f2efc8; /* Divider / section tone */
     --b-d-2-color: #e9e4b8; /* Subtle section contrast */
@@ -89,10 +121,34 @@
 body {
   background-color: var(--b-color);
   color: var(--t-a-color);
+  &::after {
+    content: "";
+    /* width: ; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4rem;
+    background-color: var(--b-color-o);
+    /* -moz-user-select: none; */
+    /* pointer-events: none; */
+    /* user-select: none; */
+    /* backdrop-filter: blur(20px); */
+    pointer-events: none;
+    opacity: 0;
+  }
 }
 body:has(.modal:not(.hide)),
 body:has(.askCont.active) {
   overflow: hidden;
+  &::after {
+    background-color: var(--b-color-o);
+
+    opacity: 1;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
 }
 .p-div {
   width: var(--parent-width);
@@ -290,6 +346,7 @@ button {
         padding: calc(0.25 * var(--unit)) calc(0.5 * var(--unit));
         resize: none;
         width: 100%;
+        white-space: pre-wrap;
       }
       textarea {
         height: calc(var(--unit) * 12.5);
@@ -325,6 +382,7 @@ p.filler.show {
     flex-basis: 15rem;
     width: min(15rem, 100%);
     text-transform: uppercase;
+    white-space: pre-wrap;
     span {
       font-family: var(--font-sans);
       font-size: var(--p-unit);
@@ -383,63 +441,86 @@ p.filler.show {
   justify-content: center !important;
 }
 .task .modal {
-  /* width: max(100% - var(--unit), var(--parent-width)); */
-
-  width: calc(var(--parent-width) - var(--unit) * 2);
-  max-height: calc(100dvh - var(--unit) * 2);
+  height: calc(100dvh - var(--unit) * 2);
   z-index: 100;
   background-color: var(--b-d-color);
-  padding: calc(var(--unit));
+  /* padding: calc(var(--unit)); */
   position: fixed;
   top: 50%;
   left: 50%;
-  translate: -50% -50%;
-  display: grid;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: start;
   gap: var(--p-unit);
   border: var(--btn-color-h) var(--bd-unit);
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--t-tsk-p-color) transparent;
-  * {
-    /* border: 1px solid #fffa; */
-    /* width: 100% !important; */
-  }
+  min-width: calc(100dvw - (var(--unit) * 2));
 
-  .modal-wrapper {
-    width: var(--parent-width);
-    position: static;
-    height: fit-content;
+  @media screen and (max-width: 800px) {
+    width: calc(100dvw - 4px);
+    height: calc(100dvh - 4px);
   }
+  .modal-scroll {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--unit);
+    overflow-y: auto;
+    flex: 1;
+    padding: var(--unit);
+    padding-bottom: calc(
+      5rem + var(--unit)
+    ); /* so text doesn’t hide behind bottom buttons */
+    scrollbar-width: thin;
+    scrollbar-color: var(--btn-color) transparent;
+    width: 100%;
+  }
+  /* & > * { */
+  /* border: 1px solid #fffaaa08; */
+  /* } */
   p.task-date {
     color: var(--early-color);
+    min-height: 1.2lh;
   }
   h3.task-title {
     text-transform: capitalize;
-    font-size: calc(var(--unit) * 5) !important;
+    font-size: calc(var(--p-unit) * 4) !important;
     color: var(--t-tsk-p-color);
     max-width: 40rem;
-    text-align: center;
+    /* text-align: center; */
     /* border: 1px solid #000; */
-    margin-inline: auto;
-    margin-bottom: calc(var(--unit) * 2);
-    line-height: 0.8;
+    /* margin-inline: auto;/ */
+    /* margin-bottom: calc(var(--unit) * 2); */
+    line-height: 1.2;
+    margin-top: var(--unit);
+    line-break: anywhere;
   }
   p.Task-details {
     color: var(--t-tsk-color);
-    max-height: none;
-    line-height: 1.2lh;
-    max-width: 60ch;
+    max-height: none !important;
+    line-height: 1.6;
+    max-width: 75ch;
     word-wrap: normal !important;
+    /* min-height: npno; */
     text-align: left;
-    margin-inline: auto;
-    margin-bottom: calc(var(--unit) * 4);
+    /* margin-inline: auto; */
+    /* margin-bottom: calc(var(--unit) * 4); */
     line-break: strict;
+    white-space: pre-wrap;
+    overflow: visible;
+  }
+  .opt-btns {
+    position: fixed;
+    bottom: var(--unit);
+    right: calc(var(--unit) / 2);
   }
 
   button.exit {
+    display: block;
+    margin-inline: auto 0;
     position: fixed;
     top: var(--unit);
-    right: var(--unit);
+    right: calc(var(--unit) / 2);
     /* border: 1px solid gray; */
     color: var(--t-tsk-p-color);
     background-color: var(--rem-color);

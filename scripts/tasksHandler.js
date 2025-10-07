@@ -128,7 +128,7 @@ function loadTasks() {
       tDiv.innerHTML = `<div id="task-detail">
                                 <p data-date="${time}" class="date">Due Date: ${time} </p>
                                 <h3 class="taskTitle" data-title="${name}">${name}</h3>
-                                <p class="Task Details" data-detials="${details}"> ${details}</p>
+                                <p class="Task Details" data-detials="${details}">${details.trim("")}</p>
                             </div>
                             <div class="opt-btns" >
                                 <button  class="remove-btn">Remove Task</button>
@@ -142,16 +142,18 @@ function loadTasks() {
         const fullD = document.createElement(`div`);
         fullD.classList.add('modal');
         fullD.innerHTML = `
+        
         <button type="button" class="closeModal exit"><span>✕</span></button>
-          <div class="modal-wrapper">
-            <p class="task-date">Due Date: ${time}</p>
-            <h3 class="task-title" data-title="${name}">${name}</h3>
-            <p class="Task-details" data-detials="${details}"> ${details}</p>
+        <div class="modal-scroll">
+          <p class="task-date">Due Date: ${time}</p>
+          <h3 class="task-title" data-title="${name}">${name}</h3>
+          <p class="Task-details" > ${details}</p>
+        </div>
               <div class="opt-btns" class="optBtns modal-btns">
                                 <button  class="remove-btn">Remove Task</button>
                                 <button  class="clear-btn">Done Task</button>
                             </div>
-          </div>
+          
 
           `;
         td.insertAdjacentElement('afterend', fullD);
